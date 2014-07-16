@@ -1,5 +1,23 @@
 #! /bin/bash
 
 script/branding
-script/proof
-bundle exec rake
+
+## Determine which tests need to be run based on which files changed
+total_files=0
+site_files=0
+
+for file in $(git diff --name-only origin $(git log --pretty=format:"%h" -2 | tail -1)); do
+	(( total_files++ ))
+	if [[ "$file" =~ ^site/ ]]; then
+		(( site_files++ ))
+	fi
+done
+
+# Run regular tests if any non-site files were changed
+if [ "$total_files" -gt "$site_files" ]; then
+	bundle exec rake
+fi
+
+if [ "$site_files" -gt "0" ]; then
+	script/proof
+fi
