@@ -5,6 +5,8 @@
 
 git diff --name-only origin $(git log --pretty=format:"%h" -2 | tail -1) | grep '^/site' || {
     echo "No site files changed. We'll skip proofing."
+    echo $(git diff --name-only origin $(git log --pretty=format:"%h" -2 | tail -1)
+    echo $(git diff --name-only origin/master)
     exit 0
 }
 
